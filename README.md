@@ -9,6 +9,7 @@ A modern, responsive countdown timer application that can be deployed as a stati
 - **Configurable Duration**: Set countdown duration (default: 2 minutes)
 - **Warning Threshold**: Visual warning when time is low (default: 1 minute)
 - **Interactive Controls**: Start, Pause, Resume, Completed, and Reset states
+- **Wake Lock API**: Prevents screen from locking while timer is running
 - **Static Deployment**: Can be deployed as a static application
 - **Responsive Design**: Works seamlessly across desktop, tablet, and mobile devices
 - **Modern UI**: Clean, intuitive interface built with Tailwind CSS
@@ -129,6 +130,7 @@ The countdown timer operates as a state machine with 4 distinct states:
 - **Visual Polish**: Ensured inner circle has zero stroke width for clean appearance
 - **Functionality Verification**: Confirmed Reset button correctly sets remaining time to duration value
 - **Reset Button Fix**: Enhanced reset functionality to reliably set remaining time to duration value
+- **Wake Lock API**: Added screen lock prevention during timer operation
 
 ### Planned Features
 - **Static Deployment**: Optimize for static site generation
@@ -241,6 +243,19 @@ This section tracks all prompts and requirements that have shaped the developmen
 - Ensured remaining time always shows duration value when timer is in ready state
 - Fixed timing issues with state updates to guarantee correct display
 - Reset button now reliably sets remaining time to current duration input value
+
+### Prompt #12: Wake Lock API Implementation
+**Date**: Current
+**Request**: "add code to request a wake lock using the wake lock api when the state is changed from ready to running, and to release it when the state is changed to ready"
+**Implementation**:
+- Added wake lock functionality to prevent screen from locking during timer
+- Request wake lock when transitioning from ready to running state
+- Request wake lock when resuming from paused to running state
+- Release wake lock when resetting to ready state
+- Release wake lock when timer completes
+- Added cleanup to release wake lock on component unmount
+- Implemented proper error handling for wake lock API
+- Added console logging for wake lock status tracking
 
 ---
 

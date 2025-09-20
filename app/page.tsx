@@ -12,6 +12,7 @@ export default function CountdownTimer() {
   const [buttonLabel, setButtonLabel] = useState('Start');
   
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
   // Convert minutes to seconds
   const totalSeconds = duration * 60;
@@ -30,15 +31,42 @@ export default function CountdownTimer() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Request wake lock to prevent screen from locking
+  const requestWakeLock = async () => {
+    try {
+      if ('wakeLock' in navigator && wakeLockRef.current === null) {
+        wakeLockRef.current = await navigator.wakeLock.request('screen');
+        console.log('Screen wake lock acquired');
+        
+        wakeLockRef.current.addEventListener('release', () => {
+          console.log('Screen wake lock released');
+          wakeLockRef.current = null;
+        });
+      }
+    } catch (err) {
+      console.error('Failed to acquire wake lock:', err);
+    }
+  };
+
+  // Release wake lock
+  const releaseWakeLock = () => {
+    if (wakeLockRef.current) {
+      wakeLockRef.current.release();
+      wakeLockRef.current = null;
+    }
+  };
+
   // Start countdown
   const startTimer = () => {
     if (state === 'ready') {
       setRemainingTime(totalSeconds);
       setState('running');
       setButtonLabel('Pause');
+      requestWakeLock(); // Request wake lock when starting timer
     } else if (state === 'paused') {
       setState('running');
       setButtonLabel('Pause');
+      requestWakeLock(); // Request wake lock when resuming timer
     }
   };
 
@@ -62,6 +90,7 @@ export default function CountdownTimer() {
     setState('ready');
     setRemainingTime(duration * 60); // Set to current duration value in seconds
     setButtonLabel('Start');
+    releaseWakeLock(); // Release wake lock when resetting to ready state
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -102,6 +131,20 @@ export default function CountdownTimer() {
       setRemainingTime(duration * 60);
     }
   }, [duration, state]);
+
+  // Handle wake lock when timer completes
+  useEffect(() => {
+    if (state === 'completed') {
+      releaseWakeLock(); // Release wake lock when timer completes
+    }
+  }, [state]);
+
+  // Cleanup wake lock on component unmount
+  useEffect(() => {
+    return () => {
+      releaseWakeLock();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">

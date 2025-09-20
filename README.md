@@ -8,7 +8,7 @@ A modern, responsive countdown timer application that can be deployed as a stati
 - **Visual Countdown Display**: Two concentric circles showing remaining time
 - **Configurable Duration**: Set countdown duration (default: 2 minutes)
 - **Warning Threshold**: Visual warning when time is low (default: 1 minute)
-- **Interactive Controls**: Start, Pause, Resume, and Completed states
+- **Interactive Controls**: Start, Pause, Resume, Completed, and Reset states
 - **Static Deployment**: Can be deployed as a static application
 - **Responsive Design**: Works seamlessly across desktop, tablet, and mobile devices
 - **Modern UI**: Clean, intuitive interface built with Tailwind CSS
@@ -88,11 +88,12 @@ The countdown timer operates as a state machine with 4 distinct states:
   - **Dark blue stroke**: When remaining time is above threshold
   - **Red stroke**: When remaining time is equal to or below threshold
 
-#### **Control Button:**
+#### **Control Buttons:**
 - **Start**: Initial label, starts the countdown (Ready → Running)
 - **Pause**: Pauses the countdown (Running → Paused)
 - **Resume**: Resumes the countdown (Paused → Running)
 - **Completed**: Final state when countdown finishes (Running → Completed)
+- **Reset**: Resets timer to ready state (Any state → Ready)
 
 ### Basic Usage
 1. Start the development server: `npm run dev`
@@ -100,7 +101,8 @@ The countdown timer operates as a state machine with 4 distinct states:
 3. Set your desired countdown duration and warning threshold
 4. Click "Start" to begin the countdown
 5. Use "Pause"/"Resume" to control the timer
-6. Timer will show "Completed" when finished
+6. Use "Reset" to return to ready state at any time
+7. Timer will show "Completed" when finished
 
 ### Customization
 - Modify `app/page.tsx` to change the main component
@@ -121,12 +123,14 @@ The countdown timer operates as a state machine with 4 distinct states:
 - **Visual Design**: Added two concentric circles for countdown visualization
 - **Input Controls**: Added duration and warning threshold input fields
 - **Button States**: Implemented Start/Pause/Resume/Completed button functionality
+- **Reset Functionality**: Added Reset button to return timer to ready state
+- **UI Layout**: Optimized button layout to horizontal row with equal sizing
 
 ### Planned Features
-- **Second Button**: Additional control button (to be implemented)
 - **Static Deployment**: Optimize for static site generation
 - **Sound Alerts**: Audio notifications for threshold and completion
 - **Preset Durations**: Quick-select buttons for common durations
+- **Keyboard Shortcuts**: Space bar for start/pause, R for reset
 
 ### Known Issues
 - *No known issues at this time*
@@ -172,6 +176,28 @@ This section tracks all prompts and requirements that have shaped the developmen
 **Date**: Current
 **Request**: "add a section to the readme file containing all the prompts, continuously adding new prompts"
 **Implementation**: Created this prompts tracking section for continuous documentation updates
+
+### Prompt #6: Reset Button Implementation
+**Date**: Current
+**Request**: "add another button called 'Reset' that is enabled when the state is not ready. when pressed, the state is changed to ready, the remaining time is set to the value specified in the duration input field, the outer circle is reset to 360 degree segment, and the color corresponding to time above threshold value"
+**Implementation**:
+- Added Reset button with proper enabled/disabled states
+- Implemented reset functionality to return to ready state
+- Reset remaining time to full duration value
+- Reset outer circle progress to 360-degree segment
+- Applied proper color logic (dark blue when above threshold)
+- Clear any running intervals when resetting
+- Updated UI layout to accommodate both buttons
+
+### Prompt #7: Button Layout Optimization
+**Date**: Current
+**Request**: "put the two buttons on the same row, and make them equal in size"
+**Implementation**:
+- Changed button layout from vertical stack to horizontal flex layout
+- Applied `flex-1` class to both buttons for equal width distribution
+- Added consistent gap spacing between buttons
+- Standardized button styling (same padding, font size, and height)
+- Maintained responsive design with proper centering
 
 ---
 

@@ -57,6 +57,17 @@ export default function CountdownTimer() {
     }
   };
 
+  // Reset timer
+  const resetTimer = () => {
+    setState('ready');
+    setRemainingTime(totalSeconds);
+    setButtonLabel('Start');
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
   // Timer effect
   useEffect(() => {
     if (state === 'running' && remainingTime > 0) {
@@ -176,12 +187,12 @@ export default function CountdownTimer() {
           </div>
         </div>
 
-        {/* Control Button */}
-        <div className="text-center">
+        {/* Control Buttons */}
+        <div className="flex gap-4 justify-center">
           <button
             onClick={handleButtonClick}
             disabled={state === 'completed'}
-            className={`px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-200 ${
+            className={`flex-1 px-6 py-3 rounded-lg font-semibold text-lg transition-all duration-200 ${
               state === 'completed'
                 ? 'bg-gray-400 text-white cursor-not-allowed'
                 : state === 'running'
@@ -190,6 +201,18 @@ export default function CountdownTimer() {
             }`}
           >
             {buttonLabel}
+          </button>
+          
+          <button
+            onClick={resetTimer}
+            disabled={state === 'ready'}
+            className={`flex-1 px-6 py-3 rounded-lg font-semibold text-lg transition-all duration-200 ${
+              state === 'ready'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-gray-600 hover:bg-gray-700 text-white'
+            }`}
+          >
+            Reset
           </button>
         </div>
 

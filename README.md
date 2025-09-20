@@ -82,8 +82,8 @@ The countdown timer operates as a state machine with 4 distinct states:
 - **Warning Threshold**: Warning threshold in minutes (default: 1 minute)
 
 #### **Visual Design:**
-- **Inner Circle**: Shows remaining time in minutes and seconds with light blue fill
-- **Outer Circle**: Transparent fill with stroke (10% of inner circle width)
+- **Inner Circle**: Shows remaining time in minutes and seconds with light blue fill, same radius as outer circle, positioned behind outer circle
+- **Outer Circle**: Transparent fill with stroke (10% of inner circle width), positioned in front of inner circle
   - Visualizes remaining time as a clockwise segment starting from the top
   - **Dark blue stroke**: When remaining time is above threshold
   - **Red stroke**: When remaining time is equal to or below threshold
@@ -125,6 +125,9 @@ The countdown timer operates as a state machine with 4 distinct states:
 - **Button States**: Implemented Start/Pause/Resume/Completed button functionality
 - **Reset Functionality**: Added Reset button to return timer to ready state
 - **UI Layout**: Optimized button layout to horizontal row with equal sizing
+- **Circle Layout**: Adjusted inner circle size to match outer circle radius with proper layering
+- **Visual Polish**: Ensured inner circle has zero stroke width for clean appearance
+- **Functionality Verification**: Confirmed Reset button correctly sets remaining time to duration value
 
 ### Planned Features
 - **Static Deployment**: Optimize for static site generation
@@ -198,6 +201,35 @@ This section tracks all prompts and requirements that have shaped the developmen
 - Added consistent gap spacing between buttons
 - Standardized button styling (same padding, font size, and height)
 - Maintained responsive design with proper centering
+
+### Prompt #8: Circle Layout Adjustment
+**Date**: Current
+**Request**: "make the inner circle bigger, so that its radius is the same as the outer circle. the inner circle is behind the outer circle"
+**Implementation**:
+- Increased inner circle size from `w-32 h-32` to `w-36 h-36` to match outer circle radius
+- Reordered elements to place inner circle behind outer circle
+- Added z-index layering (`z-0` for inner, `z-10` for outer)
+- Maintained proper centering and visual hierarchy
+- Updated visual design to show inner circle as background with outer circle overlay
+
+### Prompt #9: Inner Circle Stroke Width
+**Date**: Current
+**Request**: "does the inner circle have a stroke width? if so, change it to zero"
+**Implementation**:
+- Checked inner circle implementation (uses div with background, not SVG)
+- Added explicit `border-0` class to ensure no stroke width
+- Confirmed inner circle has zero stroke width for clean appearance
+- Maintained visual consistency with outer circle stroke
+
+### Prompt #10: Reset Button Functionality Verification
+**Date**: Current
+**Request**: "when the Reset button is pressed, change the value of remaining time shown in the inner circle to the value given in the Duration input field"
+**Implementation**:
+- Verified existing reset functionality already implements this behavior
+- Reset function sets `setRemainingTime(totalSeconds)` where `totalSeconds = duration * 60`
+- This correctly sets remaining time to duration input field value (converted to seconds)
+- Functionality was already working as requested from previous implementation
+- No code changes needed - behavior confirmed to be correct
 
 ---
 

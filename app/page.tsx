@@ -146,8 +146,22 @@ export default function CountdownTimer() {
         {/* Visual Timer */}
         <div className="flex justify-center mb-8">
           <div className="relative">
-            {/* Outer Circle - Progress Ring */}
-            <svg width="200" height="200" className="transform -rotate-90">
+            {/* Inner Circle - Time Display (behind outer circle) */}
+            <div className="absolute inset-0 flex items-center justify-center z-0">
+              <div className="w-36 h-36 bg-blue-100 rounded-full flex items-center justify-center border-0">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-800">
+                    {formatTime(remainingTime)}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {state === 'completed' ? 'Done!' : 'remaining'}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Outer Circle - Progress Ring (in front of inner circle) */}
+            <svg width="200" height="200" className="transform -rotate-90 relative z-10">
               <circle
                 cx="100"
                 cy="100"
@@ -170,20 +184,6 @@ export default function CountdownTimer() {
                 className="transition-all duration-1000 ease-linear"
               />
             </svg>
-            
-            {/* Inner Circle - Time Display */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-800">
-                    {formatTime(remainingTime)}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {state === 'completed' ? 'Done!' : 'remaining'}
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 

@@ -1,103 +1,210 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState, useEffect, useRef } from 'react';
+
+type TimerState = 'ready' | 'running' | 'paused' | 'completed';
+
+export default function CountdownTimer() {
+  const [state, setState] = useState<TimerState>('ready');
+  const [duration, setDuration] = useState(2); // minutes
+  const [warningThreshold, setWarningThreshold] = useState(1); // minutes
+  const [remainingTime, setRemainingTime] = useState(0); // seconds
+  const [buttonLabel, setButtonLabel] = useState('Start');
+  
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Convert minutes to seconds
+  const totalSeconds = duration * 60;
+  const warningSeconds = warningThreshold * 60;
+
+  // Calculate remaining time percentage for outer circle
+  const progressPercentage = remainingTime > 0 ? (remainingTime / totalSeconds) * 100 : 0;
+  
+  // Determine outer circle color based on threshold
+  const outerCircleColor = remainingTime <= warningSeconds ? '#ef4444' : '#1e40af'; // red or dark blue
+
+  // Format time display
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Start countdown
+  const startTimer = () => {
+    if (state === 'ready') {
+      setRemainingTime(totalSeconds);
+      setState('running');
+      setButtonLabel('Pause');
+    } else if (state === 'paused') {
+      setState('running');
+      setButtonLabel('Pause');
+    }
+  };
+
+  // Pause countdown
+  const pauseTimer = () => {
+    setState('paused');
+    setButtonLabel('Resume');
+  };
+
+  // Handle button click
+  const handleButtonClick = () => {
+    if (state === 'ready' || state === 'paused') {
+      startTimer();
+    } else if (state === 'running') {
+      pauseTimer();
+    }
+  };
+
+  // Timer effect
+  useEffect(() => {
+    if (state === 'running' && remainingTime > 0) {
+      intervalRef.current = setInterval(() => {
+        setRemainingTime((prev) => {
+          if (prev <= 1) {
+            setState('completed');
+            setButtonLabel('Completed');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [state, remainingTime]);
+
+  // Reset timer when duration changes
+  useEffect(() => {
+    if (state === 'ready') {
+      setRemainingTime(0);
+    }
+  }, [duration, state]);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
+          Countdown Timer
+        </h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+        {/* Input Fields */}
+        <div className="space-y-4 mb-8">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Duration (minutes)
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="60"
+              value={duration}
+              onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 1))}
+              disabled={state !== 'ready'}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Warning Threshold (minutes)
+            </label>
+            <input
+              type="number"
+              min="1"
+              max={duration}
+              value={warningThreshold}
+              onChange={(e) => setWarningThreshold(Math.max(1, Math.min(parseInt(e.target.value) || 1, duration)))}
+              disabled={state !== 'ready'}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+            />
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Visual Timer */}
+        <div className="flex justify-center mb-8">
+          <div className="relative">
+            {/* Outer Circle - Progress Ring */}
+            <svg width="200" height="200" className="transform -rotate-90">
+              <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="none"
+                stroke="#e5e7eb"
+                strokeWidth="18"
+                className="opacity-30"
+              />
+              <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="none"
+                stroke={outerCircleColor}
+                strokeWidth="18"
+                strokeLinecap="round"
+                strokeDasharray={`${2 * Math.PI * 90}`}
+                strokeDashoffset={`${2 * Math.PI * 90 * (1 - progressPercentage / 100)}`}
+                className="transition-all duration-1000 ease-linear"
+              />
+            </svg>
+            
+            {/* Inner Circle - Time Display */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-800">
+                    {formatTime(remainingTime)}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {state === 'completed' ? 'Done!' : 'remaining'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Control Button */}
+        <div className="text-center">
+          <button
+            onClick={handleButtonClick}
+            disabled={state === 'completed'}
+            className={`px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-200 ${
+              state === 'completed'
+                ? 'bg-gray-400 text-white cursor-not-allowed'
+                : state === 'running'
+                ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                : 'bg-blue-500 hover:bg-blue-600 text-white'
+            }`}
+          >
+            {buttonLabel}
+          </button>
+        </div>
+
+        {/* State Indicator */}
+        <div className="mt-6 text-center">
+          <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+            state === 'ready' ? 'bg-gray-100 text-gray-800' :
+            state === 'running' ? 'bg-green-100 text-green-800' :
+            state === 'paused' ? 'bg-yellow-100 text-yellow-800' :
+            'bg-red-100 text-red-800'
+          }`}>
+            State: {state.charAt(0).toUpperCase() + state.slice(1)}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

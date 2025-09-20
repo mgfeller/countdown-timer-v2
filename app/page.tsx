@@ -60,7 +60,7 @@ export default function CountdownTimer() {
   // Reset timer
   const resetTimer = () => {
     setState('ready');
-    setRemainingTime(totalSeconds);
+    setRemainingTime(duration * 60); // Set to current duration value in seconds
     setButtonLabel('Start');
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -96,10 +96,10 @@ export default function CountdownTimer() {
     };
   }, [state, remainingTime]);
 
-  // Reset timer when duration changes
+  // Set initial remaining time to duration value
   useEffect(() => {
     if (state === 'ready') {
-      setRemainingTime(0);
+      setRemainingTime(duration * 60);
     }
   }, [duration, state]);
 

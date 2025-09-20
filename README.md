@@ -128,6 +128,7 @@ The countdown timer operates as a state machine with 4 distinct states:
 - **Circle Layout**: Adjusted inner circle size to match outer circle radius with proper layering
 - **Visual Polish**: Ensured inner circle has zero stroke width for clean appearance
 - **Functionality Verification**: Confirmed Reset button correctly sets remaining time to duration value
+- **Reset Button Fix**: Enhanced reset functionality to reliably set remaining time to duration value
 
 ### Planned Features
 - **Static Deployment**: Optimize for static site generation
@@ -230,6 +231,16 @@ This section tracks all prompts and requirements that have shaped the developmen
 - This correctly sets remaining time to duration input field value (converted to seconds)
 - Functionality was already working as requested from previous implementation
 - No code changes needed - behavior confirmed to be correct
+
+### Prompt #11: Reset Button Functionality Fix
+**Date**: Current
+**Request**: "when the Reset button is pressed, set the remaining time to the value of the Duration input field"
+**Implementation**:
+- Updated reset function to explicitly use `duration * 60` instead of `totalSeconds`
+- Added useEffect to set initial remaining time to duration value when in ready state
+- Ensured remaining time always shows duration value when timer is in ready state
+- Fixed timing issues with state updates to guarantee correct display
+- Reset button now reliably sets remaining time to current duration input value
 
 ---
 

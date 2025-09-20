@@ -131,6 +131,7 @@ The countdown timer operates as a state machine with 4 distinct states:
 - **Functionality Verification**: Confirmed Reset button correctly sets remaining time to duration value
 - **Reset Button Fix**: Enhanced reset functionality to reliably set remaining time to duration value
 - **Wake Lock API**: Added screen lock prevention during timer operation
+- **Wake Lock Status**: Added visual indicator showing wake lock active/inactive status
 
 ### Planned Features
 - **Static Deployment**: Optimize for static site generation
@@ -256,6 +257,18 @@ This section tracks all prompts and requirements that have shaped the developmen
 - Added cleanup to release wake lock on component unmount
 - Implemented proper error handling for wake lock API
 - Added console logging for wake lock status tracking
+
+### Prompt #13: Wake Lock Status Indicator
+**Date**: Current
+**Request**: "add a label next to the state label indicating whether a wake lock has been acquired or not"
+**Implementation**:
+- Added `wakeLockActive` state variable to track wake lock status
+- Updated wake lock functions to set status when acquired/released
+- Added wake lock status indicator next to state indicator
+- Visual styling: blue background when active, gray when inactive
+- Real-time status updates when wake lock is acquired or released
+- Proper error handling to set status to inactive on failure
+- Clean UI layout with both state and wake lock indicators
 
 ---
 

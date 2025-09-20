@@ -10,6 +10,7 @@ export default function CountdownTimer() {
   const [warningThreshold, setWarningThreshold] = useState(1); // minutes
   const [remainingTime, setRemainingTime] = useState(0); // seconds
   const [buttonLabel, setButtonLabel] = useState('Start');
+  const [wakeLockActive, setWakeLockActive] = useState(false);
   
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
@@ -36,15 +37,18 @@ export default function CountdownTimer() {
     try {
       if ('wakeLock' in navigator && wakeLockRef.current === null) {
         wakeLockRef.current = await navigator.wakeLock.request('screen');
+        setWakeLockActive(true);
         console.log('Screen wake lock acquired');
         
         wakeLockRef.current.addEventListener('release', () => {
           console.log('Screen wake lock released');
+          setWakeLockActive(false);
           wakeLockRef.current = null;
         });
       }
     } catch (err) {
       console.error('Failed to acquire wake lock:', err);
+      setWakeLockActive(false);
     }
   };
 
@@ -54,6 +58,7 @@ export default function CountdownTimer() {
       wakeLockRef.current.release();
       wakeLockRef.current = null;
     }
+    setWakeLockActive(false);
   };
 
   // Start countdown
@@ -260,7 +265,7 @@ export default function CountdownTimer() {
         </div>
 
         {/* State Indicator */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center space-y-2">
           <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
             state === 'ready' ? 'bg-gray-100 text-gray-800' :
             state === 'running' ? 'bg-green-100 text-green-800' :
@@ -268,6 +273,12 @@ export default function CountdownTimer() {
             'bg-red-100 text-red-800'
           }`}>
             State: {state.charAt(0).toUpperCase() + state.slice(1)}
+          </div>
+          
+          <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+            wakeLockActive ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'
+          }`}>
+            Wake Lock: {wakeLockActive ? 'Active' : 'Inactive'}
           </div>
         </div>
       </div>

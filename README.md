@@ -132,6 +132,7 @@ The countdown timer operates as a state machine with 4 distinct states:
 - **Reset Button Fix**: Enhanced reset functionality to reliably set remaining time to duration value
 - **Wake Lock API**: Added screen lock prevention during timer operation
 - **Wake Lock Status**: Added visual indicator showing wake lock active/inactive status
+- **MIT License**: Added standard MIT license file for project distribution
 
 ### Planned Features
 - **Static Deployment**: Optimize for static site generation
@@ -269,6 +270,16 @@ This section tracks all prompts and requirements that have shaped the developmen
 - Real-time status updates when wake lock is acquired or released
 - Proper error handling to set status to inactive on failure
 - Clean UI layout with both state and wake lock indicators
+
+### Prompt #14: MIT License File
+**Date**: Current
+**Request**: "add the MIT LICENSE file"
+**Implementation**:
+- Created standard MIT License file in project root
+- Added copyright notice for 2024 Countdown Timer v2
+- Included full MIT license text with permissions and limitations
+- License file is now available for project distribution
+- README already references the LICENSE file in the License section
 
 ---
 

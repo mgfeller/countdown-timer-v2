@@ -136,6 +136,7 @@ The countdown timer operates as a state machine with 4 distinct states:
 - **Wake Lock Status**: Added visual indicator showing wake lock active/inactive status
 - **MIT License**: Added standard MIT license file for project distribution
 - **AI Acknowledgment**: Added transparency note about AI-assisted development
+- **README Cleanup**: Removed Support and Contributing sections for streamlined documentation
 
 ### Planned Features
 - **Static Deployment**: Optimize for static site generation
@@ -294,6 +295,16 @@ This section tracks all prompts and requirements that have shaped the developmen
 - Acknowledged rapid development and feature implementation approach
 - Maintains transparency about development methodology
 
+### Prompt #17: README Section Cleanup
+**Date**: Current
+**Request**: "Remove the Support and Contributing sections from the readme file"
+**Implementation**:
+- Removed the "🤝 Contributing" section with fork/PR instructions
+- Removed the "📞 Support" section with help/issue guidelines
+- Kept the "📚 Learn More" and "📄 License" sections
+- Streamlined README to focus on project documentation
+- Maintained clean, focused documentation structure
+
 ---
 
 *This section will be continuously updated as new prompts and requirements are received.*
@@ -322,14 +333,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - **AWS S3**: Host static files on Amazon S3
 - **Cloudflare Pages**: Deploy directly from GitHub
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## 📚 Learn More
 
 To learn more about the technologies used in this project:
@@ -342,13 +345,6 @@ To learn more about the technologies used in this project:
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-If you have any questions or need help, please:
-- Open an issue on GitHub
-- Check the documentation
-- Review the code examples
 
 ---
 
